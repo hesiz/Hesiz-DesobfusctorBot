@@ -56,8 +56,9 @@ class Deobfuscate(commands.Cog):
                         file=discord.File(decompiled_path, filename="Desobf.lua")
                     )
                 else:
+                    error_dec = stderr_dec.decode()
                     await interaction.followup.send(
-                        content="Desobfuscación completada, pero la decompilación falló. Se envía el bytecode:",
+                        content=f"Desobfuscación completada, pero la decompilación falló.\nError del decompilador: `{error_dec[:500]}`\nSe envía el bytecode original:",
                         file=discord.File(output_path, filename="Desobf.luac")
                     )
             else:
