@@ -32,3 +32,4 @@ This is a Discord bot designed to deobfuscate Lua scripts using MoonsecDeobfusca
 3. Upload the .lua or .txt file you want to deobfuscate when prompted.
 
 The bot will return the deobfuscated Lua file and/or the disassembly.
+(I don't own the desobf tool, I only created the bot that uses it because there are idiots selling this stuff) 
