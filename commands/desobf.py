@@ -25,7 +25,8 @@ class Deobfuscate(commands.Cog):
 
         try:
             # Guardar el archivo adjunto
-            await archivo.save(input_path)
+            with open(input_path, "wb") as f:
+                await archivo.save(f)
 
             # Ejecutar la herramienta de desobfuscación
             # Según el README: dotnet build -c Release (ya debería estar compilado o lo compilamos)
@@ -42,7 +43,7 @@ class Deobfuscate(commands.Cog):
 
             process = await asyncio.create_subprocess_exec(
                 "dotnet", "run", "--project", "MoonsecDeobfuscator/MoonsecDeobfuscator.csproj", "--", 
-                "-dev", "-i", input_path, "-o", output_path,
+                "-dev", "-i", os.path.abspath(input_path), "-o", os.path.abspath(output_path),
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
