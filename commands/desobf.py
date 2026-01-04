@@ -51,8 +51,8 @@ class Deobfuscate(commands.Cog):
 
             if os.path.exists(output_path):
                 await interaction.followup.send(
-                    content="Desobfuscación completada (Bytecode Lua 5.1):",
-                    file=discord.File(output_path, filename="Desobf.lua")
+                    content="Desobfuscación completada (Bytecode Lua 5.1). Nota: Este archivo es bytecode, para obtener el código fuente debes usar un decompilador de Lua 5.1 (como luadec o unluac).",
+                    file=discord.File(output_path, filename="Desobf.luac")
                 )
             else:
                 error_msg = stderr.decode() or stdout.decode() or "Error desconocido al desobfuscar."
