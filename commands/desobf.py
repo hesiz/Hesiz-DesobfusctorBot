@@ -10,10 +10,10 @@ class Deobfuscate(commands.Cog):
         self.bot = bot
 
     @discord.app_commands.command(name="desobf", description="Desobfusca un archivo Lua usando MoonsecDeobfuscator")
-    @discord.app_commands.describe(archivo="El archivo .lua ofuscado")
+    @discord.app_commands.describe(archivo="El archivo .lua o .txt ofuscado")
     async def desobf(self, interaction: discord.Interaction, archivo: discord.Attachment):
-        if not archivo.filename.endswith(".lua"):
-            await interaction.response.send_message("Por favor, sube un archivo .lua", ephemeral=True)
+        if not (archivo.filename.lower().endswith(".lua") or archivo.filename.lower().endswith(".txt")):
+            await interaction.response.send_message("Por favor, sube un archivo .lua o .txt", ephemeral=True)
             return
 
         await interaction.response.defer()
