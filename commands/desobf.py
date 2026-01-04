@@ -39,6 +39,16 @@ class Deobfuscate(commands.Cog):
             stdout, stderr = await process.communicate()
 
             if os.path.exists(output_path):
+                # Intentar obtener la desensamblación como respaldo si la decompilación falla
+                disasm_path = f"temp_dis_{temp_id}.txt"
+                disasm_proc = await asyncio.create_subprocess_exec(
+                    "dotnet", "run", "--project", "MoonsecDeobfuscator/MoonsecDeobfuscator.csproj", "--", 
+                    "-dis", "-i", os.path.abspath(input_path), "-o", os.path.abspath(disasm_path),
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+                await disasm_proc.communicate()
+
                 # Intentar decompilar el bytecode generado
                 decompile_proc = await asyncio.create_subprocess_exec(
                     "java", "-jar", "unluac.jar", os.path.abspath(output_path),
@@ -57,10 +67,16 @@ class Deobfuscate(commands.Cog):
                     )
                 else:
                     error_dec = stderr_dec.decode()
+                    files_to_send = [discord.File(output_path, filename="Desobf.luac")]
+                    if os.path.exists(disasm_path):
+                        files_to_send.append(discord.File(disasm_path, filename="Disassembly.txt"))
+                    
                     await interaction.followup.send(
-                        content=f"Desobfuscación completada, pero la decompilación falló.\nError del decompilador: `{error_dec[:500]}`\nSe envía el bytecode original:",
-                        file=discord.File(output_path, filename="Desobf.luac")
+                        content=f"La decompilación falló (posible bytecode protegido o corrupto).\nError: `{error_dec[:200]}`\nTe envío el bytecode y el desensamblado para análisis manual:",
+                        files=files_to_send
                     )
+                
+                if os.path.exists(disasm_path): os.remove(disasm_path)
             else:
                 error_msg = stderr.decode() or stdout.decode() or "Error desconocido al desobfuscar."
                 await interaction.followup.send(f"Error al desobfuscar: {error_msg[:1900]}")
