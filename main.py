@@ -16,6 +16,8 @@ class MyBot(commands.Bot):
 
     async def setup_hook(self):
         # Cargar comandos desde la carpeta commands
+        if not os.path.exists("./commands"):
+            os.makedirs("./commands")
         for filename in os.listdir("./commands"):
             if filename.endswith(".py"):
                 await self.load_extension(f"commands.{filename[:-3]}")
